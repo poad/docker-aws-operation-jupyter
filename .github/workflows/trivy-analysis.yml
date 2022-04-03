@@ -1,0 +1,57 @@
+name: Trivy Container Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request_target:
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+  schedule:
+    - cron: '26 17 * * 3'
+
+jobs:
+  build:
+    name: Trivy Container Scan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: [
+          { distribution: 'ubuntu', dist_version_code: 'bionic', ubuntu_version_code: 'bionic', tag: 'bionic' },
+          { distribution: 'ubuntu', dist_version_code: 'focal', ubuntu_version_code: 'focal', tag: 'focal' },
+          { distribution: 'debian', dist_version_code: 'buster', ubuntu_version_code: 'bionic', tag: 'buster' },
+          { distribution: 'ubuntu', dist_version_code: 'focal', ubuntu_version_code: 'focal', tag: 'latest' }
+        ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build an image from Dockerfile
+        if: ${{ always() }}
+        env:
+          IMAGRE_NAME: docker.io/poad/docker-zsh:${{ matrix.versions.tag }}
+          DOCKER_BUILDKIT: 1
+        run: |
+          CUR=$(pwd) && \
+          docker build \
+            -t ${IMAGRE_NAME} \
+            --build-arg DISTRIBUTION=${{ matrix.versions.distribution }} \
+            --build-arg DIST_VERSION_CODE=${{ matrix.versions.dist_version_code }} \
+            --build-arg UBUNTU_VERSION_CODE=${{ matrix.versions.ubuntu_version_code }} \
+            . && \
+          cd ${CUR}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        if: ${{ always() }}
+        with:
+          image-ref: docker.io/poad/docker-zsh:${{ matrix.versions.tag }}
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: ${{ always() }}
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: 'trivy-results.sarif'

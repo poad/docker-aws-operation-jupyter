@@ -1,0 +1,88 @@
+name: Docker build and push
+ 
+on:
+  push:
+    branches:
+    - main 
+  pull_request_target:
+    branches:
+      - main
+  schedule:
+    - cron:  '0 0 * * 2'
+
+  workflow_dispatch:
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    env:
+      ACTIONS_RUNNER_DEBUG: true
+    steps:
+      - name: Enable auto merge to pull request
+        uses: poad/github-pull-request-auto-merge-enable-action@v1.0.1
+        with:
+          pull_request_number: ${{ github.event.pull_request.number }}
+          github_token: ${{ secrets.PERSONAL_TOKEN_FOR_GITHUB_ACTIONS }}
+          repository: ${{ github.event.repository.name }}
+          owner: ${{ github.repository_owner }}
+          merge_method: SQUASH
+
+  docker_build_push:
+    strategy:
+      matrix:
+        versions: [
+          { distribution: 'ubuntu', dist_version_code: 'bionic', ubuntu_version_code: 'bionic', tag: 'bionic' },
+          { distribution: 'ubuntu', dist_version_code: 'focal', ubuntu_version_code: 'focal', tag: 'focal' },
+          { distribution: 'debian', dist_version_code: 'buster', ubuntu_version_code: 'bionic', tag: 'buster' },
+          { distribution: 'ubuntu', dist_version_code: 'focal', ubuntu_version_code: 'focal', tag: 'latest' }
+        ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Login to DockerHub
+      if: github.event_name != 'pull_request' && github.actor != 'dependabot[bot]'
+      uses: docker/login-action@v1 
+      with:
+        username: poad
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build
+      if: github.event_name == 'pull_request' || github.actor == 'dependabot[bot]'
+      uses: docker/build-push-action@v2
+      with:
+        push: false
+        context: .
+        platforms: linux/amd64,linux/arm64
+        tags: poad/docker-aws-operation-jupyter:${{ matrix.versions.tag }}
+        build-args: |
+          DISTRIBUTION=${{ matrix.versions.distribution }}
+          DIST_VERSION_CODE=${{ matrix.versions.dist_version_code }}
+          UBUNTU_VERSION_CODE=${{ matrix.versions.ubuntu_version_code }}
+
+    - name: Build and push
+      if: github.event_name != 'pull_request' && github.actor != 'dependabot[bot]'
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        context: .
+        platforms: linux/amd64,linux/arm64
+        tags: poad/docker-aws-operation-jupyter:${{ matrix.versions.tag }}
+        build-args: |
+          DISTRIBUTION=${{ matrix.versions.distribution }}
+          DIST_VERSION_CODE=${{ matrix.versions.dist_version_code }}
+          UBUNTU_VERSION_CODE=${{ matrix.versions.ubuntu_version_code }}
