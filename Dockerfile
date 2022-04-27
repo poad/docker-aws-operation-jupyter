@@ -161,8 +161,8 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt \
 RUN groupadd -g 1000 "${USER_NAME}" \
  && useradd -g 1000 -l -m -s /usr/bin/zsh -u 1000 "${USER_NAME}"
 
-RUN npm install -g itypescript \
- && its --install=global
+RUN npm install -g typescript-jupyter-kernel \
+ && ts-kernel install
 
 # RUN npm -g i ijavascript-plotly
 # RUN jupyter labextension install jupyterlab-plotly @jupyter-widgets/jupyterlab-manager plotlywidget
