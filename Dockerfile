@@ -50,6 +50,7 @@ ARG USER_HOME
 
 ARG LLVM_VERSION
 ARG PYTHON_VERSION
+ARG UBUNTU_CODENAME
 
 ENV LANGUAGE="en_US:en"
 ENV LC_ALL="en_US.UTF-8"
@@ -125,7 +126,7 @@ ARG DEPENDENCIES="\
   uuid-dev"
 
 RUN cat /tmp/llvm-snapshot.gpg.key | apt-key add - \
- && echo "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
+ && echo "deb http://apt.llvm.org/${UBUNTU_CODENAME}/ llvm-toolchain-${UBUNTU_CODENAME}-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get update -qq \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
