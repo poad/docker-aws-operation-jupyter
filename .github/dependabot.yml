@@ -11,8 +11,8 @@ updates:
     assignees:
       - poad
 
-  - package-ecosystem: npm
-    directory: '/tests/'
+  - package-ecosystem: docker
+    directory: '/'
     schedule:
       interval: daily
       timezone: Asia/Tokyo
