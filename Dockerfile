@@ -214,6 +214,11 @@ RUN rm -rf $HOME/.zprezto/runcoms/zshrc \
 
 WORKDIR ${USER_HOME}/notebook
 
+RUN mkdir -p ${USER_HOME}/.npm \
+ && npm config set prefix=${USER_HOME}/.npm
+
+ENV PATH=${USER_HOME}/.npm/bin:$PATH
+
 HEALTHCHECK CMD [ "npm", "--version" ]
 
 EXPOSE 8888
