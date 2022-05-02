@@ -13,4 +13,3 @@ tornado
 jupyter_core
 jupyter_client
 bash_kernel
-zsh_kernel

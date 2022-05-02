@@ -83,6 +83,7 @@ ARG DEPENDENCIES="\
   clang++-${LLVM_VERSION} \
   lld-${LLVM_VERSION} \
   git \
+  figlet \
   imagemagick \
   libbz2-dev \
   libc6-dev \
@@ -133,7 +134,6 @@ RUN cat /tmp/llvm-snapshot.gpg.key | apt-key add - \
  && add-apt-repository ppa:git-core/ppa -y \
  && add-apt-repository ppa:deadsnakes/ppa -y \
  && apt-get install -qqy --no-install-recommends zsh \
- && chsh -s /usr/bin/zsh \
  && chmod +x /tmp/setup_nodejs.sh \
  && /tmp/setup_nodejs.sh \
  && apt-get update -qq \
@@ -147,23 +147,22 @@ RUN cat /tmp/llvm-snapshot.gpg.key | apt-key add - \
 RUN update-alternatives --install "/usr/bin/python3" "python3" "/usr/bin/python${PYTHON_VERSION}" 31000 \
  && update-alternatives --install "/usr/bin/python" "python" "/usr/bin/python3" 31000 \
  && python /tmp/get-pip.py --no-cache-dir \
+ && rm -f /tmp/get-pip.py \
  && pip3 install --no-cache-dir -U pip \
  && pip install --no-cache-dir -U setuptools boto3  \
  && npm -g i npm \
  && npm -g i yarn configurable-http-proxy
 
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
+ && rm -f /tmp/requirements.txt \
+ && python -m bash_kernel.install --sys-prefix \
  && jupyter serverextension enable --py jupyterlab --sys-prefix \
  && jupyter nbextension enable --py widgetsnbextension \
  && npm -g i tslab \
- && tslab install \
- && rm -f /tmp/requirements.txt /tmp/get-pip.py
+ && tslab install
  
 RUN groupadd -g 1000 "${USER_NAME}" \
  && useradd -g 1000 -l -m -s /usr/bin/zsh -u 1000 "${USER_NAME}"
-
-# RUN npm -g i ijavascript-plotly
-# RUN jupyter labextension install jupyterlab-plotly @jupyter-widgets/jupyterlab-manager plotlywidget
 
 USER ${USER_NAME}
 
@@ -181,6 +180,9 @@ RUN jupyter notebook --generate-config \
 COPY --chown=1000:1000 jupyter_notebook_config.py ${USER_HOME}/.jupyter/jupyter_notebook_config.py
 COPY --chown=1000:1000 setup.zsh ${USER_HOME}/setup.zsh
 COPY --chown=1000:1000 assets/zshrc /tmp/zshrc
+COPY --chown=1000:1000 assets/package.json ${USER_HOME}/notebook/package.json
+COPY --chown=1000:1000 assets/yarn.lock ${USER_HOME}/notebook/yarn.lock
+COPY --chown=1000:1000 assets/tsconfig.json ${USER_HOME}/notebook/tsconfig.json
 COPY --chown=1000:1000 --from=downloader /tmp/git-completion.bash ${USER_HOME}/.zsh/git-completion.bash
 COPY --chown=1000:1000 --from=downloader /tmp/_git ${USER_HOME}/.zsh/_git
 COPY --chown=1000:1000 --from=downloader /tmp/git-prompt.sh ${USER_HOME}/.zsh/git-prompt.sh
@@ -196,8 +198,6 @@ ARG USER_HOME
 USER ${USER_NAME}
 
 WORKDIR ${USER_HOME}
-
-# SHELL [ "/usr/bin/zsh" ]
 
 RUN chmod 744 $HOME/setup.zsh \
  && $HOME/setup.zsh \
@@ -217,10 +217,13 @@ WORKDIR ${USER_HOME}/notebook
 RUN mkdir -p ${USER_HOME}/.npm \
  && npm config set prefix=${USER_HOME}/.npm
 
-ENV PATH=${USER_HOME}/.npm/bin:$PATH
+ENV PATH=${USER_HOME}/.npm/bin:$PATH \
+    SHELL=/usr/bin/zsh
 
 HEALTHCHECK CMD [ "npm", "--version" ]
 
 EXPOSE 8888
+
+SHELL [ "/usr/bin/zsh" ]
 
 CMD ["jupyter", "lab"]

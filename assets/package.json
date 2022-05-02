@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "devDependencies": {
+    "@types/node": "*",
+    "ts-node": "*",
+    "typescript": "*"
+  }
+}
