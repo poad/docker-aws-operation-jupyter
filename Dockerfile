@@ -155,9 +155,8 @@ RUN update-alternatives --install "/usr/bin/python3" "python3" "/usr/bin/python$
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
  && jupyter serverextension enable --py jupyterlab --sys-prefix \
  && jupyter nbextension enable --py widgetsnbextension \
- && npm -g i --unsafe-perm ijavascript \
- && ijsinstall --install=global \
  && npm -g i tslab \
+ && tslab install \
  && rm -f /tmp/requirements.txt /tmp/get-pip.py
  
 RUN groupadd -g 1000 "${USER_NAME}" \
