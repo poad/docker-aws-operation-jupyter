@@ -23,7 +23,7 @@ updates:
       - poad
 
   - package-ecosystem: npm
-    directory: '/assets'
+    directory: '/assets/'
     schedule:
       interval: daily
       timezone: Asia/Tokyo
