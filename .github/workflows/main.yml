@@ -66,7 +66,7 @@ jobs:
       with:
         push: false
         context: .
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
         tags: poad/docker-aws-operation-jupyter:${{ matrix.versions.tag }}
         build-args: |
           DISTRIBUTION=${{ matrix.versions.distribution }}
