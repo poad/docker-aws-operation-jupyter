@@ -1,8 +1,8 @@
 ARG UBUNTU_CODENAME="jammy"
 
-ARG NODE_VERSION="16.x"
-ARG LLVM_VERSION=14
-ARG PYTHON_VERSION=3.10
+ARG NODE_VERSION="18.x"
+ARG LLVM_VERSION=15
+ARG PYTHON_VERSION=3.11
 
 ARG USER_NAME="jupyter"
 ARG USER_HOME="/home/${USER_NAME}"
@@ -131,7 +131,7 @@ RUN cat /tmp/llvm-snapshot.gpg.key | apt-key add - \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get update -qq \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
- && add-apt-repository ppa:git-core/ppa -y \
+ && if ! "${UBUNTU_CODENAME}" == "jammy"; then add-apt-repository ppa:git-core/ppa -y; fi \
  && add-apt-repository ppa:deadsnakes/ppa -y \
  && apt-get install -qqy --no-install-recommends zsh \
  && chmod +x /tmp/setup_nodejs.sh \
