@@ -30,9 +30,8 @@ jobs:
     strategy:
       matrix:
         versions: [
-          { distribution: 'ubuntu', dist_version_code: 'bionic', ubuntu_version_code: 'bionic', tag: 'bionic' },
           { distribution: 'ubuntu', dist_version_code: 'focal', ubuntu_version_code: 'focal', tag: 'focal' },
-          { distribution: 'debian', dist_version_code: 'buster', ubuntu_version_code: 'bionic', tag: 'buster' },
+          { distribution: 'debian', dist_version_code: 'jammy', ubuntu_version_code: 'jammy', tag: 'bookworm' },
           { distribution: 'ubuntu', dist_version_code: 'jammy', ubuntu_version_code: 'jammy', tag: 'jammy' },
           { distribution: 'ubuntu', dist_version_code: 'jammy', ubuntu_version_code: 'jammy', tag: 'latest' }
         ]
