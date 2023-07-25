@@ -54,7 +54,7 @@ ARG UBUNTU_CODENAME
 
 ENV LANGUAGE="en_US:en"
 ENV LC_ALL="en_US.UTF-8"
-ENV PATH="${PATH}:${JAVA_HOME}/bin:/root/.local/bin"
+ENV PATH="${PATH}:${JAVA_HOME}/bin:/root/.local/bin:/usr/local/bin"
 
 USER root
 
@@ -156,10 +156,10 @@ RUN update-alternatives --install "/usr/bin/python3" "python3" "/usr/bin/python$
 
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
  && rm -f /tmp/requirements.txt \
- && python -m bash_kernel.install --sys-prefix \
- && jupyter serverextension enable --py jupyterlab --sys-prefix \
- && jupyter nbextension enable --py widgetsnbextension \
- && npm -g i tslab \
+ && python -m bash_kernel.install --sys-prefix
+RUN jupyter serverextension enable --py jupyterlab --sys-prefix \
+ && jupyter nbextension enable --py widgetsnbextension
+RUN npm -g i tslab \
  && tslab install
  
 RUN groupadd -g 1000 "${USER_NAME}" \
