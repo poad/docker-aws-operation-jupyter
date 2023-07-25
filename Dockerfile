@@ -130,6 +130,7 @@ RUN cat /tmp/llvm-snapshot.gpg.key | apt-key add - \
  && echo "deb http://apt.llvm.org/${UBUNTU_CODENAME}/ llvm-toolchain-${UBUNTU_CODENAME}-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get update -qq \
+ && apt-get full-upgrade -qqy \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
  && if ! "${UBUNTU_CODENAME}" == "jammy"; then add-apt-repository ppa:git-core/ppa -y; fi \
  && add-apt-repository ppa:deadsnakes/ppa -y \
