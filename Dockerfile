@@ -54,7 +54,7 @@ ARG UBUNTU_CODENAME
 
 ENV LANGUAGE="en_US:en"
 ENV LC_ALL="en_US.UTF-8"
-ENV PATH="${PATH}:${JAVA_HOME}/bin"
+ENV PATH="${PATH}:${JAVA_HOME}/bin:/root/.local/bin"
 
 USER root
 
@@ -152,7 +152,7 @@ RUN update-alternatives --install "/usr/bin/python3" "python3" "/usr/bin/python$
  && pip3 install --no-cache-dir -U pip \
  && pip install --no-cache-dir -U setuptools boto3  \
  && npm -g i npm \
- && npm -g i yarn configurable-http-proxy
+ && npm -g i yarn pnpm configurable-http-proxy
 
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
  && rm -f /tmp/requirements.txt \
