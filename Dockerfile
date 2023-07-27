@@ -79,6 +79,7 @@ ARG DEPENDENCIES="\
   dpkg-dev \
   file \
   gcc \
+  cmake \
   clang-${LLVM_VERSION} \
   clang++-${LLVM_VERSION} \
   lld-${LLVM_VERSION} \
@@ -154,12 +155,12 @@ RUN update-alternatives --install "/usr/bin/python3" "python3" "/usr/bin/python$
  && npm -g i npm \
  && npm -g i yarn pnpm configurable-http-proxy
 
+ENV PATH="${PATH}:/usr/local/bin"
+
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
  && rm -f /tmp/requirements.txt \
- && python -m bash_kernel.install --sys-prefix
-RUN jupyter serverextension enable --py jupyterlab --sys-prefix \
- && jupyter nbextension enable --py widgetsnbextension
-RUN npm -g i tslab \
+ && python -m bash_kernel.install --sys-prefix \
+ && npm -g i tslab \
  && tslab install
  
 RUN groupadd -g 1000 "${USER_NAME}" \
@@ -169,7 +170,6 @@ USER ${USER_NAME}
 
 ENV LANGUAGE="en_US:en"
 ENV LC_ALL="en_US.UTF-8 "
-ENV PATH="${PATH}:/usr/local/bin"
 
 WORKDIR /tmp
 
