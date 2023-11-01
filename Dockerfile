@@ -1,6 +1,6 @@
 ARG UBUNTU_CODENAME="jammy"
 
-ARG NODE_VERSION="18.x"
+ARG NODE_VERSION="20.x"
 ARG LLVM_VERSION=16
 ARG PYTHON_VERSION=3.11
 
@@ -182,7 +182,7 @@ COPY --chown=1000:1000 jupyter_notebook_config.py ${USER_HOME}/.jupyter/jupyter_
 COPY --chown=1000:1000 setup.zsh ${USER_HOME}/setup.zsh
 COPY --chown=1000:1000 assets/zshrc /tmp/zshrc
 COPY --chown=1000:1000 assets/package.json ${USER_HOME}/notebook/package.json
-COPY --chown=1000:1000 assets/yarn.lock ${USER_HOME}/notebook/yarn.lock
+COPY --chown=1000:1000 assets/pnpm-lock.yaml ${USER_HOME}/notebook/pnpm-lock.yaml
 COPY --chown=1000:1000 assets/tsconfig.json ${USER_HOME}/notebook/tsconfig.json
 COPY --chown=1000:1000 --from=downloader /tmp/git-completion.bash ${USER_HOME}/.zsh/git-completion.bash
 COPY --chown=1000:1000 --from=downloader /tmp/_git ${USER_HOME}/.zsh/_git

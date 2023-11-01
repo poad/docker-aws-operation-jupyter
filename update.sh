@@ -19,7 +19,7 @@ if [ $result -ne 0 ]; then
   cd "${CUR}"
   exit $result
 fi
-yarn install && yarn upgrade
+pnpm install && pnpm -r up
 result=$?
 if [ $result -ne 0 ]; then
   cd "${CUR}"
