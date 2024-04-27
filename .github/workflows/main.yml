@@ -30,7 +30,6 @@ jobs:
     strategy:
       matrix:
         versions: [
-          { distribution: 'ubuntu', dist_version_code: 'noble', ubuntu_version_code: 'noble', tag: 'noble' },
           { distribution: 'ubuntu', dist_version_code: 'focal', ubuntu_version_code: 'focal', tag: 'focal' },
           { distribution: 'debian', dist_version_code: 'jammy', ubuntu_version_code: 'jammy', tag: 'bookworm' },
           { distribution: 'ubuntu', dist_version_code: 'jammy', ubuntu_version_code: 'jammy', tag: 'jammy' },
