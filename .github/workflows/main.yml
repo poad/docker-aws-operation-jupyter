@@ -30,6 +30,7 @@ jobs:
     strategy:
       matrix:
         versions: [
+          { distribution: 'ubuntu', dist_version_code: 'noble', ubuntu_version_code: 'noble', tag: 'noble' },
           { distribution: 'ubuntu', dist_version_code: 'focal', ubuntu_version_code: 'focal', tag: 'focal' },
           { distribution: 'debian', dist_version_code: 'jammy', ubuntu_version_code: 'jammy', tag: 'bookworm' },
           { distribution: 'ubuntu', dist_version_code: 'jammy', ubuntu_version_code: 'jammy', tag: 'jammy' },
@@ -70,7 +71,7 @@ jobs:
         build-args: |
           DISTRIBUTION=${{ matrix.versions.distribution }}
           DIST_VERSION_CODE=${{ matrix.versions.dist_version_code }}
-          UBUNTU_VERSION_CODE=${{ matrix.versions.ubuntu_version_code }}
+          UBUNTU_CODENAME=${{ matrix.versions.ubuntu_version_code }}
 
     - name: Build and push
       if: github.event_name != 'pull_request' && github.actor != 'dependabot[bot]'
@@ -84,4 +85,4 @@ jobs:
         build-args: |
           DISTRIBUTION=${{ matrix.versions.distribution }}
           DIST_VERSION_CODE=${{ matrix.versions.dist_version_code }}
-          UBUNTU_VERSION_CODE=${{ matrix.versions.ubuntu_version_code }}
+          UBUNTU_CODENAME=${{ matrix.versions.ubuntu_version_code }}
