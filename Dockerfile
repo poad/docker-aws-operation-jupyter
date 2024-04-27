@@ -151,7 +151,9 @@ RUN update-alternatives --install "/usr/bin/python3" "python3" "/usr/bin/python$
  && python /tmp/get-pip.py --no-cache-dir \
  && rm -f /tmp/get-pip.py \
  && pip3 install --no-cache-dir -U pip \
- && pip install --no-cache-dir -U setuptools boto3  \
+ && pip install --no-cache-dir -U setuptools  \
+ && pip install --no-cache-dir -U boto3  \
+ && pip install --no-cache-dir -U six  \
  && npm -g i npm \
  && npm -g i yarn pnpm configurable-http-proxy
 
